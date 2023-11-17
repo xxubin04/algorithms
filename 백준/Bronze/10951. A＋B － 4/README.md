@@ -2,6 +2,14 @@
 
 [문제 링크](https://www.acmicpc.net/problem/10951) 
 
+
+### 배운 점
+테스트 케이스 개수 정해지지 X
+try : 변수 A,B에 int형이 입력되면, A+B값 출력
+except : try에 에러 발생할 경우
+break : while문 멈춤
+[(출처 : 백준 10951번 python)](https://velog.io/@jsw8050/%EB%B0%B1%EC%A4%80-while%EB%AC%B8-10951%EB%B2%88-AB-4-Python)
+
 ### 성능 요약
 
 메모리: 31120 KB, 시간: 48 ms
