@@ -5,11 +5,12 @@
 
 ### 배운 점
 테스트 케이스 개수 정해지지 X
-try : 변수 A,B에 int형이 입력되면, A+B값 출력
 
-except : try에 에러 발생할 경우
+- try : 변수 A,B에 int형이 입력되면, A+B값 출력
 
-break : while문 멈춤
+- except : try에 에러 발생할 경우
+
+- break : while문 멈춤
 
 [(출처 : 백준 10951번 python)]
 
