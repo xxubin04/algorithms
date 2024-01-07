@@ -1,14 +1,9 @@
-def cal(n):
-    global total
-    while n != 0:
-        total += n
-        n -= 1
-    return total
-
-while True:
+while 1:
     total = 0
     num = int(input())
     if num != 0:
-        print(cal(num))
+        for i in range(1, num+1):
+            total += i
+        print(total)
     else:
         break
