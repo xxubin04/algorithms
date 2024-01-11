@@ -2,24 +2,24 @@ import sys
 sys.setrecursionlimit(10**6)
 input = open(0).readline
 
-N = int(input())                                          
-route = [[] for _ in range(N+1)]                          
-visited = [0 for _ in range(N+1)]                         
-dist = [0 for _ in range(N+1)]
-num = 1                                                   
+N = int(input())
+route = [[] for _ in range(N + 1)]
+visited = [0 for _ in range(N + 1)]
+max_dist = 0
 
-def dfs(x):
-    visited[x] = 1                                        
-    for k in range(len(route[x])):                        
-        place = route[x][k][0]                            
-        if not visited[place]:                            
-            dist[place] = route[x][k][1]+ dist[x]         
-            dfs(place)                                    
+def dfs(x=1, total_dist=0):
+    global max_dist
+    visited[x] = 1
+    max_dist = max(max_dist, total_dist)
 
-for i in range(N-1):
-    A, B, C = map(int, input().split())                   
-    route[A].append([B, C])                               
-    route[B].append([A, C])               
+    for i, j in route[x]:
+        if visited[i] == 0:
+            dfs(i, total_dist + j)
 
-dfs(num)                                                  
-print(max(dist))
+for i in range(N - 1):
+    A, B, C = map(int, input().split())
+    route[A].append([B, C])
+    route[B].append([A, C])
+
+dfs()
+print(max_dist)
