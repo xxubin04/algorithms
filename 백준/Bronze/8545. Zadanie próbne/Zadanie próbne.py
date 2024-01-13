@@ -1,0 +1,1 @@
+lan = input(); print(lan[::-1])
