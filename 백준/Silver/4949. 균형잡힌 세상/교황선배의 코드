@@ -1,0 +1,15 @@
+def is_balanced(a: str) -> bool:
+    stack = []
+    for i in a:
+        if i == '(' or i == '[':
+            stack.append(i)
+        elif i == ')' or i == ']':
+            if not stack:  # stack에 남은 괄호가 없으면 올바르지 않음
+                return False
+            if (stack[-1] == ')' and i == '[') or (stack[-1] == ']' and i == '('):  # 마지막에 넣은 괄호가 다른 종류면 올바르지 않음
+                return False
+            stack.pop()  # 올바른 괄호이므로 스택에서 제거
+    return not stack  # 스택이 비어있다면 올바른 괄호, 아니라면 올바르지 않음
+
+while (a := input().rstrip()) and a != ".":
+    print('yes' if is_balanced(a) else 'no')
