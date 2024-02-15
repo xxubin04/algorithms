@@ -1,3 +1,5 @@
+input = open(0).readline
+
 tree_num, length = map(int, input().split())
 trees = sorted(list(map(int, input().split())))
 
