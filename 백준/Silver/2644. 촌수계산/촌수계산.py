@@ -3,10 +3,9 @@ input = open(0).readline
 
 people_num = int(input())
 A, B = map(int, input().split())
-relation_num = int(input())
 relationship = [[0] for _ in range(people_num + 1)]
 
-for i in range(relation_num):
+for i in range(relation_num := int(input())):
     a, b = map(int, input().split())
     if relationship[a] == [0]:
         relationship[a] = [b]
@@ -34,7 +33,7 @@ def chon(r, c, p):
                     ans.append(cnt)
                     return ans
                 q.append((relation, cnt, j))
-                
+
 ans = []       
 cnt = 0
 answer = chon(relationship, cnt, B)
