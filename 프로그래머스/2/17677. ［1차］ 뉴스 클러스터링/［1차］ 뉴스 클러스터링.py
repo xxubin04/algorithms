@@ -18,7 +18,7 @@ def solution(str1, str2):
             list2.remove(i)
             duplication += 1
             
-    if len(list2) == 0 or total == duplication:
+    if (len(list1) == 0 and len(list2) == 0) or total == duplication:
         return 65536
     
     answer = floor(duplication / (total - duplication) * 65536) 
