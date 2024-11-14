@@ -1,34 +1,25 @@
-from collections import deque
 input = open(0).readline
 
 n = int(input())
 area = []
-q = deque()
-
 dx, dy = [0, 1], [1, 0]
-visited = [[0 for _ in range(n)] for _ in range(n)]  # 방문처리
+arrive = False
+visited = [[0 for _ in range(n)] for _ in range(n)]
 
-def BFS(visited):
-    while q:
-        x, y = q.popleft()
-
+def DFS(x, y, visited):
+    global arrive
+    if area[x][y] == -1:
+        arrive = True
+    if visited[x][y] == 0:
+        visited[x][y] = 1
         for i in range(2):
             nx, ny = x + area[x][y] * dx[i], y + area[x][y] * dy[i]
-
             if 0 <= nx < n and 0 <= ny < n:
-                if area[nx][ny] == -1:
-                    return "HaruHaru"
+                DFS(nx, ny, visited)
 
-                if visited[nx][ny] == 0:
-                    visited[nx][ny] = 1
-                    q.append((nx, ny))
-            else:
-                continue
-    return "Hing"
 
 for i in range(n):
     area.append(list(map(int, input().split())))
 
-q.append((0, 0))
-print(BFS(visited))
-
+DFS(0, 0, visited)
+print("HaruHaru") if arrive else print("Hing")
