@@ -8,10 +8,4 @@ for _ in range(nation_num):
     medal[nation] = [gold, silver, bronze]
 
 line = sorted(medal.values(), key=lambda x: (x[0], x[1], x[2]), reverse=True)
-
-line_no_dup = []
-for i in line:
-    if i not in line_no_dup:
-        line_no_dup.append(i)
-
-print(line_no_dup.index(medal[wanna_rank])+1)
+print(line.index(medal[wanna_rank])+1)
