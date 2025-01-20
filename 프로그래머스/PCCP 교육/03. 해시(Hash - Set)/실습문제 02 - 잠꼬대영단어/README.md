@@ -33,9 +33,16 @@
 ### 출력2
 
 4
-입력3
+
+<br>
+
+
+### 입력3
 
 "handle guide ostrich guide bar ostrich handle guide bar knee guide bar knee"
-출력3
+
+<br>
+
+### 출력3
 
 5
