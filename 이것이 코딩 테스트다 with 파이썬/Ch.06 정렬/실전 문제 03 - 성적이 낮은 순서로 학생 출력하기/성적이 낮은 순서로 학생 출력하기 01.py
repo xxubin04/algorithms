@@ -12,7 +12,7 @@ for _ in range(n := int(input())):
 
 # 성적을 기준으로 내림차순 정렬
 # sorted 함수는 딕셔너리의 키들을 정렬된 리스트로 반환
-result = sorted(info, key=lambda x: x[1], reverse=True)
+result = sorted(info, key=lambda x: info[x], reverse=True)
 
 for i in result:
     print(i, end=' ')
