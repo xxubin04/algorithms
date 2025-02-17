@@ -9,7 +9,7 @@ d = [10001] * (m+1)
 d[0] = 0
 for i in range(n):
     for j in range(money[i], m+1):
-        if d[j - money[i]] != 10001:  # (i - k)원을 만든느 방법이 존재한다면
+        if d[j - money[i]] != 10001:  # (i - k)원을 만드는 방법이 존재한다면
             d[j] = min(d[j], d[j - money[i]] + 1)
 
 if d[m] == 10001:
