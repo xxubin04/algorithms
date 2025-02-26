@@ -14,7 +14,7 @@ class Solution(object):
                 roman_num += (roman[digits[n*2]] * 2)
             elif n_list[n] == 3:
                 # roman_num += (roman[digits[(n*2)+1]] + roman[digits[n*2]] * 2)
-                roman_num += (roman[digits[(n*2)+1]] * 3)
+                roman_num += (roman[digits[(n*2)]] * 3)
             elif n_list[n] == 4:
                 roman_num += (roman[digits[(n*2)+1]] + roman[digits[n*2]])   
             elif n_list[n] == 5:
