@@ -13,7 +13,6 @@ class Solution(object):
             elif n_list[n] == 2:
                 roman_num += (roman[digits[n*2]] * 2)
             elif n_list[n] == 3:
-                # roman_num += (roman[digits[(n*2)+1]] + roman[digits[n*2]] * 2)
                 roman_num += (roman[digits[(n*2)]] * 3)
             elif n_list[n] == 4:
                 roman_num += (roman[digits[(n*2)+1]] + roman[digits[n*2]])   
