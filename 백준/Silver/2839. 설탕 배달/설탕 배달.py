@@ -1,24 +1,12 @@
-input = open(0).readline
+N = int(input())
+arr = [5*i for i in range(N // 5, -1, -1)]
 
-kilo = int(input())
-num = 0; ans = False
+for j in range(len(arr)):
+    if (div := N - arr[j]) == 0:
+        print(len(arr) - j - 1)
+        quit()
+    elif div % 3 == 0:
+        print((len(arr) - j - 1) + (div // 3))
+        quit()
 
-remain = kilo % 5
-num += kilo // 5
-if remain % 3 == 0:
-    num += remain // 3
-    print(num); ans = True
-else:
-    num = 0
-    for i in range(kilo // 5, -1, -1):
-        if (kilo - 5 * i) % 3 == 0:
-            num = i + ((kilo - 5 * i) // 3); ans = True
-            print(num)
-            break
-        else:
-            pass
-
-if ans == True:
-    pass
-else:
-    print(-1)
+print(-1)
