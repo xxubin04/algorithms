@@ -1,23 +1,16 @@
 input = open(0).readline
 
-dots = []
-
-for i in range(n := int(input())):
-    x, y = map(int, input().split())
-    dots.append((x, 1))
-    dots.append((y, -1))
-
-dots.sort()
-
-cnt = 0
+n = int(input())
+start, end = map(int, input().split())
 total = 0
 
-for n, d in dots:
-    cnt += d
-    if cnt == 1 and d == 1:  # start면서 겹치는 것 X
-        start = n
-    elif cnt == 0 and d == -1:  # end면서 겹치는 것 X
-        end =  n
-        total += (end - start)
+for i in range(n-1):
+    x, y = map(int, input().split())
 
-print(total)
+    if x <= end:
+        end = max(end, y)
+    else:
+        total += (end - start)
+        start, end = x, y
+
+print(total + end - start)
