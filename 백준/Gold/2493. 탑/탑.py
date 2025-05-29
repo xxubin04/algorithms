@@ -1,7 +1,7 @@
-input = open(0).readline
+import sys
 
 n = int(input())
-towers = list(map(int, input().split()))
+towers = list(map(int, sys.stdin.readline().split()))
 stk =  [(0, towers[0])]
 answer = [0] * n
 
