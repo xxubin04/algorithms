@@ -1,7 +1,7 @@
 import sys
 
 stk = [1]
-not_yet_push = 2
+not_yet_push = 2  # 아직 스택에 넣지 않은 수 중에서 최솟값
 op = ['+']
 flag = True
 
@@ -33,7 +33,4 @@ for i in range((n := int(sys.stdin.readline()))):
                 op.append('+')
                 not_yet_push += 1
 
-if not flag:
-    print("NO")
-else:
-    for p in op: print(p)
+for p in op: print(p)
