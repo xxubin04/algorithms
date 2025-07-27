@@ -11,12 +11,16 @@ void middle_blank(int x, int y, int length) {
 	length /= 3;
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			for (int a = length; a < 2 * length; a++) {
-				for (int b = length; b < 2 * length; b++) {
-					stars[x + a][y + b] = ' ';
+			if (i == 1 && j == 1) {
+				for (int a = length; a < 2 * length; a++) {
+					for (int b = length; b < 2 * length; b++) {
+						stars[x + a][y + b] = ' ';
+					}
 				}
 			}
-			middle_blank(x + i * length, y + j * length, length);
+			else {
+				middle_blank(x + i * length, y + j * length, length);
+			}
 		}
 	}
 }
