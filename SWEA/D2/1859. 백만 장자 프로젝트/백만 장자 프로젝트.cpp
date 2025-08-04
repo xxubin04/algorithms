@@ -22,7 +22,7 @@ int main() {
 			cin >> v[i];
 
 		int max_price = 0;
-        ll ans = 0;
+		ll ans = 0;
 		for (int j = n - 1; j >= 0; j--) {
 			if (v[j] >= max_price)
 				max_price = v[j];
