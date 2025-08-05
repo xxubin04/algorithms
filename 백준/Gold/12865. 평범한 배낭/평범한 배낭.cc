@@ -2,34 +2,36 @@
 using namespace std;
 
 int n, k;
+int arr[101][100001] = { 0 };
+
+struct Thing {
+	int weight, value;
+};
 
 int main() {
 	cin >> n >> k;
 
-	vector<vector<int>> dp(n+1, vector<int>(k+1));
+	Thing thing[101];
 
-	int weight, value;
-	vector<pair<int, int>> vec;
-
-	vec.push_back(make_pair(0, 0));
+	int w, v;
 
 	for (int i = 1; i <= n; i++) {
-		cin >> weight >> value;
+		cin >> w >> v;
 
-		vec.push_back(make_pair(weight, value));
+		thing[i] = { w, v };
 	}
 
 	for (int i = 1; i <= n; i++) {
 		for (int j = 1; j <= k; j++) {
-			int w = vec[i].first, v = vec[i].second;
+			int w = thing[i].weight, v = thing[i].value;
 
 			if (w > j)
-				dp[i][j] = dp[i - 1][j];
+				arr[i][j] = arr[i - 1][j];
 			else
-				dp[i][j] = max(dp[i - 1][j], v + dp[i - 1][j - w]);
+				arr[i][j] = max(arr[i - 1][j], v + arr[i - 1][j - w]);
 		}
 	}
 
-	cout << dp[n][k] << '\n';
+	cout << arr[n][k] << '\n';
 	return 0;
 }
