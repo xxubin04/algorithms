@@ -10,7 +10,6 @@ vector<int> dfs_v;
 vector<int> bfs_v;
 vector<int> dfs_visited;
 vector<int> bfs_visited;
-queue<int> q;
 
 void dfs(int node) {
 	dfs_visited[node] = 1;
@@ -23,6 +22,10 @@ void dfs(int node) {
 }
 
 void bfs(int node) {
+	queue<int> q;
+	q.push(node);
+	bfs_visited[node] = 1;
+
 	while (!q.empty()) {
 		int n = q.front();
 		q.pop();
@@ -62,16 +65,15 @@ int main() {
 	}
 	
 	dfs(v);
-
-	q.push(v);
-	bfs_visited[v] = 1;
 	bfs(v);
 
-	for (auto node : dfs_v)
-		cout << node << " ";
-
-	cout << "\n";
-
-	for (auto node : bfs_v)
-		cout << node << " ";
+	for (size_t i = 0; i < dfs_v.size(); i++) {
+		if (i) cout << " ";
+		cout << dfs_v[i];
+	}
+	cout << '\n';
+	for (size_t i = 0; i < bfs_v.size(); i++) {
+		if (i) cout << " ";
+		cout << bfs_v[i];
+	}
 }
