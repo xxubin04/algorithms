@@ -1,6 +1,7 @@
-A,B,C=input().split()
-A,B,C=int(A),int(B),int(C)
-print((A+B)%C)
-print(((A%C)+(B%C))%C)
-print((A*B)%C)
-print(((A%C)*(B%C))%C)
+import sys
+
+a, b, c = map(int, sys.stdin.readline().split())
+print((a + b) % c)
+print(((d := (a%c)) + (e := (b % c))) % c)
+print((a * b) % c)
+print((d * e) % c)
