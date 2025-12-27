@@ -27,7 +27,7 @@ jobs:
 
       - name: Pull codetree subtree
         run: |
-          git subtree pull --prefix=codetree https://github.com/xxubin04/codetree-algorithms.git main -m "chore(subtree): sync codetree"
+          git subtree pull --prefix=codetree https://github.com/xxubin04/codetree-algorithms.git main --squash --allow-unrelated-histories -m "chore(subtree): sync codetree"
 
       - name: Push updated subtree
         run: |
