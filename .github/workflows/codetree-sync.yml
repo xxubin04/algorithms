@@ -22,7 +22,7 @@ jobs:
 
       - name: Add codetree remote
         run: |
-          git remote add codetree https://github.com/xxubin04/codetree-solutions.git
+          git remote add codetree https://github.com/xxubin04/codetree-algorithms.git
           git fetch codetree
 
       - name: Pull codetree subtree
