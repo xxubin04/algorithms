@@ -2,8 +2,8 @@ name: Sync Codetree Subtree
 
 on:
   schedule:
-    - cron: '0 16 * * *'  # 매일 KST 01:00 (UTC 16:00)
-  workflow_dispatch:
+    - cron: '0 16 * * *'  # 매일 KST 1시 (UTC 기준 16시)
+  workflow_dispatch:      # 수동 실행 버튼도 추가
 
 jobs:
   sync:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout algorithm repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # subtree는 전체 히스토리 필요
+          fetch-depth: 0  # subtree 병합을 위해 전체 커밋 기록이 필요함
 
       - name: Set Git config
         run: |
@@ -22,27 +22,12 @@ jobs:
 
       - name: Add codetree remote
         run: |
-          git remote add codetree https://github.com/xxubin04/codetree-algorithms.git || true
+          git remote add codetree https://github.com/xxubin04/codetree-algorithms.git
           git fetch codetree
 
-      - name: Sync codetree subtree
+      - name: Pull codetree subtree
         run: |
-          if git log --grep="git-subtree-dir: codetree" --oneline | grep -q .; then
-            echo "Subtree exists → pulling updates"
-            git subtree pull \
-              --prefix=codetree \
-              https://github.com/xxubin04/codetree-algorithms.git \
-              main \
-              --squash \
-              -m "chore(subtree): sync codetree"
-          else
-            echo "Subtree not found → adding subtree"
-            git subtree add \
-              --prefix=codetree \
-              https://github.com/xxubin04/codetree-algorithms.git \
-              main \
-              --squash
-          fi
+          git subtree pull --prefix=codetree codetree main -m "chore(subtree): sync codetree"
 
       - name: Push updated subtree
         run: |
