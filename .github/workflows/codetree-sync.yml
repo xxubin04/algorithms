@@ -27,7 +27,7 @@ jobs:
 
       - name: Sync codetree subtree
         run: |
-          if git log --oneline -- codetree | grep -q .; then
+          if git log --grep="git-subtree-dir: codetree" --oneline | grep -q .; then
             echo "Subtree exists → pulling updates"
             git subtree pull \
               --prefix=codetree \
