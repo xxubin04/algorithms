@@ -1,0 +1,1 @@
+print(*range(int(input()), 101), sep=' ')
