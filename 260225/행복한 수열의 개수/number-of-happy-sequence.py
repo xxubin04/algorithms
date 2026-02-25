@@ -13,8 +13,10 @@ for r in range(n):
             acc = 1
 
         if acc >= m:
-                ans += 1 
-                break
+            ans += 1 
+            break
+
+        #print(grid[r][i], prior, acc)
 
 for c in range(n):
     acc = 1
@@ -25,9 +27,12 @@ for c in range(n):
         else:
             prior = grid[i][c]
             acc = 1
-        
+
         if acc >= m:
-                ans += 1 
-                break
+            ans += 1 
+            break
+        
+        #print(grid[i][c], prior, acc)
+
 
 print(ans)
