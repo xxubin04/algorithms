@@ -2,6 +2,10 @@ n, m = map(int, input().split())
 grid = [list(map(int, input().split())) for _ in range(n)]
 ans = 0
 
+if m == 1:
+    print(2*n)
+    exit()
+    
 for r in range(n):
     acc = 1
     prior = grid[r][0]
@@ -16,8 +20,6 @@ for r in range(n):
             ans += 1 
             break
 
-        #print(grid[r][i], prior, acc)
-
 for c in range(n):
     acc = 1
     prior = grid[0][c]
@@ -31,8 +33,5 @@ for c in range(n):
         if acc >= m:
             ans += 1 
             break
-        
-        #print(grid[i][c], prior, acc)
-
 
 print(ans)
