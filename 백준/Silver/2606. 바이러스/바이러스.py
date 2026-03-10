@@ -3,7 +3,7 @@ input = open(0).readline
 
 com = int(input()); edge = int(input())
 q = deque([1])
-graph = [[] * (com + 1) for _ in range(com + 1)]
+graph = [[] for _ in range(com + 1)]
 visited = [False] * (com + 1)
 
 for _ in range(edge):
