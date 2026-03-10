@@ -1,38 +1,33 @@
 from collections import deque
-
 input = open(0).readline
 
-num = int(input())
-house = [list(map(int, (input().strip()))) for _ in range(num)]
-visited = [[0 for _ in range(num)] for _ in range(num)]
+N = int(input())
+maze = [list(map(int, input().strip())) for _ in range(N)]
+dirs = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+cnt = 0
+house_cnt = []
 
-dx = [-1, 1, 0, 0]
-dy = [0, 0, -1, 1]
+def bfs(dx, dy):
+    house = 0
+    q = deque([(dx, dy)])
+    maze[dx][dy] = -1
 
-def bfs(x, y):
-    cnt = 1
-    queue = deque()
-    queue.append((x, y))
-    house[x][y] = 0
-
-    while queue:
-        a, b = queue.popleft()
+    while q:
+        x, y = q.popleft()
+        house += 1
         for i in range(4):
-            nx = a + dx[i]
-            ny = b + dy[i]
-            if 0 <= nx < num and 0 <= ny < num:
-                if house[nx][ny] == 1:
-                    house[nx][ny] = 0
-                    queue.append((nx, ny))
-                    cnt += 1
+            nx, ny = x + dirs[i][0], y + dirs[i][1]
+            if 0 <= nx < N and 0 <= ny < N and maze[nx][ny] == 1:
+                q.append((nx, ny))
+                maze[nx][ny] = -1  # 방문처리
 
-    return cnt
+    house_cnt.append(house)
 
-ans = []
-for j in range(num):
-    for k in range(num):
-        if house[j][k] == 1:
-            ans.append(bfs(j, k))
+for i in range(N):
+    for j in range(N):
+        if maze[i][j] == 1:
+            cnt += 1
+            bfs(i, j)
 
-print(len(ans))
-for c in sorted(ans): print(c)
+print(cnt)
+print(*sorted(house_cnt), sep='\n')
