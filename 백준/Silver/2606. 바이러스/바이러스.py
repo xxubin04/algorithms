@@ -1,23 +1,18 @@
-from collections import deque
 input = open(0).readline
-
 com = int(input()); edge = int(input())
-q = deque([1])
-graph = [[] for _ in range(com + 1)]
-visited = [False] * (com + 1)
+graph = [[] for _ in range (com + 1)]
+visited = [0] * (com + 1)
 
 for _ in range(edge):
     a, b = map(int, input().split())
     graph[a].append(b)
     graph[b].append(a)
 
-def bfs():
-    while q:
-        node = q.popleft()
-        visited[node] = True
-        for conn in graph[node]:
-            if visited[conn] == False:
-                q.append(conn)
+def dfs(com):
+    if visited[com] == 0:
+        visited[com] = 1
+        for i in graph[com]:
+            dfs(i)
 
-bfs()
-print(com - visited.count(False))
+dfs(1)
+print(sum(visited) - 1)
