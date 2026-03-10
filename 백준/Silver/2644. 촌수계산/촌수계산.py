@@ -1,40 +1,28 @@
-from collections import deque
 input = open(0).readline
 
-people_num = int(input())
-A, B = map(int, input().split())
-relationship = [[0] for _ in range(people_num + 1)]
-
-for i in range(relation_num := int(input())):
-    a, b = map(int, input().split())
-    if relationship[a] == [0]:
-        relationship[a] = [b]
-    else:
-        relationship[a].append(b)
-    
-    if relationship[b] == [0]:
-        relationship[b] = [a]
-    else:
-        relationship[b].append(a)
-
-visited = [0 for _ in range(people_num + 1)]
-
-def chon(r, c, p):
-    global ans, check
-    q = deque()
-    q.append((r, c, p))
-    while q:
-        relation, cnt, person = q.popleft()
-        if visited[person] == 0:
-            visited[person] = 1
-            cnt += 1
-            for j in relation[person]:
-                if j == A:
-                    ans.append(cnt)
-                    return ans
-                q.append((relation, cnt, j))
-
-ans = []       
+n = int(input())
+a, b = map(int, input().split())
+relation = [[] for _ in range(n + 1)]
+visited = [0] * (n + 1)
 cnt = 0
-answer = chon(relationship, cnt, B)
-print(min(answer) if answer else -1)
+
+for _ in range(rel := int(input())):
+    x, y = map(int, input().split())
+    relation[x].append(y)
+    relation[y].append(x)
+
+def dfs(node, cnt):
+    if node == b:
+        return cnt
+
+    visited[node] = 1
+
+    for i in relation[node]:
+        if visited[i] == 0:
+            res = dfs(i, cnt+1)
+            if res != -1:
+                return res
+
+    return -1
+
+print(dfs(a, 0))
