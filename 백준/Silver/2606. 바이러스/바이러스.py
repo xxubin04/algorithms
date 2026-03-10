@@ -1,21 +1,23 @@
-input = open(0).readline 
+from collections import deque
+input = open(0).readline
 
-computer_num = int(input())
-connection = [[] for _ in range(computer_num+1)]
+com = int(input()); edge = int(input())
+q = deque([1])
+graph = [[] * (com + 1) for _ in range(com + 1)]
+visited = [False] * (com + 1)
 
-visited = [0 for _ in range(computer_num+1)]
-
-def dfs(x, y, z):
-    if visited[x] == 0:
-        visited[x] = 1 
-        for j in connection[x]:
-            dfs(j, cnt, visited)
-    
-for i in range(n := int(input())):
+for _ in range(edge):
     a, b = map(int, input().split())
-    connection[a].append(b); connection[b].append(a)
+    graph[a].append(b)
+    graph[b].append(a)
 
-cnt = 0
-dfs(1, cnt, visited)
+def bfs():
+    while q:
+        node = q.popleft()
+        visited[node] = True
+        for conn in graph[node]:
+            if visited[conn] == False:
+                q.append(conn)
 
-print(sum(visited)-1)
+bfs()
+print(com - visited.count(False))
