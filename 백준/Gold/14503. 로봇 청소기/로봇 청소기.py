@@ -1,32 +1,44 @@
 input = open(0).readline
-dir = [0, 1, 2, 3]  # 북, 동, 남, 서
+
 dx = [-1, 0, 1, 0]
 dy = [0, 1, 0, -1]
-ans = 0
 
-def now_clean(x, y, d):
-    global ans
-    if room[x][y] == 0:  # 현재 청소 X
-        ans += 1
-        room[x][y] = 2  # 청소 완료 표시
-    around_clean(x, y, d)
+n, m = map(int, input().split())
+x, y, d = map(int, input().split())
+graph = [list(map(int, input().split())) for _ in range(n)]
 
-def around_clean(x, y, d):
+cleaned = 0
+
+while True:
+    # 1. 현재 칸 청소
+    if graph[x][y] == 0:
+        graph[x][y] = -1
+        cleaned += 1
+
+    moved = False  # 한 칸 전진했는지의 여부
+
+    # 2. 4방향 탐색
     for _ in range(4):
-        d = (d + 3) % 4  # 반시계로 90도 회전
-        if room[x + dx[d]][y + dy[d]] == 0:  # 앞의 빈칸이 청소 X
-            now_clean(x + dx[d], y + dy[d], d)
-            return
-    back(x, y, d)
+        d = (d + 3) % 4  # 왼쪽 회전
+        nx = x + dx[d]
+        ny = y + dy[d]
 
-def back(x, y, d):
-    bd = (d + 2) % 4  # 후진 방향
-    if room[x + dx[bd]][y + dy[bd]] != 1:  # 벽이 아닌 경우 후진
-        now_clean(x + dx[bd], y + dy[bd], d)
+        if 0 <= nx < n and 0 <= ny < m and graph[nx][ny] == 0:
+            x, y = nx, ny
+            moved = True
+            break
 
-N, M = map(int, input().split())
-initial_x, initial_y, initial_d = map(int, input().split())
-room = [list(map(int, input().split())) for _ in range(N)]
+    # 3. 4방향 모두 못 감
+    if not moved:
+        back = (d + 2) % 4
+        nx = x + dx[back]
+        ny = y + dy[back]
 
-now_clean(initial_x, initial_y, initial_d)
-print(ans)
+        # 뒤가 벽이면 종료
+        if 0 <= nx < n and 0 <= ny < m:
+            if graph[nx][ny] == 1:
+                break
+            else:
+                x, y = nx, ny
+
+print(cleaned)
