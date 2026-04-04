@@ -1,64 +1,51 @@
-import sys
+N, M = map(int, input().split())
+board = [list(map(int, input().split())) for _ in range(N)]
 
-n, m = map(int, sys.stdin.readline().split())
-board = []
-visited = [[0 for _ in range(m)] for _ in range(n)]
-max_sum = 0
-dirs = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-# ㅏ, ㅜ, ㅓ, ㅗ
-frame = [[(0, 0), (1, 0), (2, 0), (1, 1)],
-         [(0, 0), (0, 1), (0, 2), (1, 1)],
-         [(1, 0), (0, 1), (1, 1), (2, 1)],
-         [(0, 1), (1, 0), (1, 1), (1, 2)]]
+visited = [[0] * M for _ in range(N)]
+dr = [-1, 1, 0, 0]
+dc = [0, 0, -1, 1]
+ans = 0
 
-def dfs(x, y, cnt, cal):
-    global max_sum
-    if cnt == 4:  # 칸 4개라면
-        max_sum = max(max_sum, cal)
+# DFS로 4칸 탐색
+def dfs(r, c, depth, total):
+    global ans
+    if depth == 4:
+        ans = max(ans, total)
         return
+    for i in range(4):
+        nr, nc = r + dr[i], c + dc[i]
+        if 0 <= nr < N and 0 <= nc < M and not visited[nr][nc]:
+            visited[nr][nc] = 1
+            dfs(nr, nc, depth+1, total+board[nr][nc])
+            visited[nr][nc] = 0  #  백트래킹
 
-    for dir in dirs:
-        nx, ny = x + dir[0], y + dir[1]
+# ㅗ 모양 4가지
+T_shapes = [
+    [(0,0), (1,0), (2,0), (1,1)],
+    [(0,0), (1,0), (2,0), (1,-1)],
+    [(0,0), (0,1), (0,2), (1,1)],
+    [(0,0), (0,1), (0,2), (-1,1)]
+]
 
-        # 범위를 벗어나거나 이미 방문했다면
-        if nx < 0 or nx >= n or ny < 0 or ny >= m or visited[nx][ny] == 1:
-            continue
+for r in range(N):
+    for c in range(M):
+        # DFS
+        visited[r][c] = 1
+        dfs(r, c, 1, board[r][c])
+        visited[r][c] = 0
 
-        visited[nx][ny] = 1
-        dfs(nx, ny, cnt + 1, cal + board[nx][ny])
-        visited[nx][ny] = 0
+        # ㅗ 모양
+        for shape in T_shapes:
+            total = 0
+            valid = True
+            for ddr, ddc in shape:
+                nr, nc = r + ddr, c +ddc
+                if 0 <= nr < N and 0 <= nc < M:
+                    total += board[nr][nc]
+                else:
+                    valid = False
+                    break
+            if valid:
+                ans = max(ans, total)
 
-for _ in range(n):
-    board.append(list(map(int, sys.stdin.readline().split())))
-
-for i in range(n):
-    for j in range(m):
-        visited[i][j] = 1
-        dfs(i, j, 1, board[i][j])
-        visited[i][j] = 0
-
-for f in range(4):
-    for x in range(n):
-        for y in range(m):
-            flag = False
-            if f == 0:
-                if 0 <= x + 2 < n and 0 <= y + 1 < m:
-                    flag = True
-            elif f == 1:
-                if 0 <= x + 1 < n and 0 <= y + 2 < m:
-                    flag = True
-            elif f == 2:
-                if 0 <= x + 2 < n and 0 <= y + 1 < m:
-                    flag = True
-            else:
-                if 0 <= x + 1 < n and 0 <= y + 2 < m:
-                    flag = True
-
-            if flag:
-                sum = 0
-                for i in range(4):
-                    fr = frame[f]
-                    sum += board[x + fr[i][0]][y + fr[i][1]]
-                max_sum = max(max_sum, sum)
-
-print(max_sum)
+print(ans)
