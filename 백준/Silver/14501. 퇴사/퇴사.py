@@ -1,20 +1,23 @@
-input = open(0).readline
+schedule = []
 
-n = int(input())
-T = [0] * (n+2)
-P = [0] * (n+2)
-dp = [0] * (n+2)
+for _ in range(N :=  int(input())):
+    schedule.append(tuple(map(int, input().split())))
 
-for i in range(1, n+1):
-    t, p = map(int, input().split())
-    T[i] = t
-    P[i] = p
+max_profit = 0
 
-for i in range(1, n+2):
-    # 상담을 하지 않아도 이전 값 계승
-    dp[i] = max(dp[i], dp[i-1])
+def dfs(day, total):
+    global max_profit
+    max_profit = max(max_profit, total)
 
-    if i + T[i] <= n+1:
-        dp[i + T[i]] = max(dp[i + T[i]], dp[i] + P[i])
+    if day >= N:
+        return
 
-print(dp[-1])
+    # 선택 1: 오늘 상담 안 잡기
+    dfs(day+1, total)
+
+    # 선택 2: 오늘 상담 잡기
+    if day + schedule[day][0] <= N:
+        dfs(day + schedule[day][0], total + schedule[day][1])
+
+dfs(0, 0)
+print(max_profit)
