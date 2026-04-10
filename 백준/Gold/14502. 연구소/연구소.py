@@ -1,6 +1,5 @@
 import sys
 from collections import deque
-from itertools import combinations
 
 input = sys.stdin.readline
 
@@ -20,7 +19,10 @@ for i in range(N):
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
 
-def bfs(board):
+answer = 0
+
+def bfs():
+    board = [row[:] for row in lab]
     q = deque(virus)
 
     while q:
@@ -39,16 +41,23 @@ def bfs(board):
         for j in range(M):
             if board[i][j] == 0:
                 safe += 1
+
     return safe
 
-answer = 0
+def dfs(start, count):
+    global answer
 
-for walls in combinations(empty, 3):
-    board = [row[:] for row in lab]
+    if count == 3:
+        answer = max(answer, bfs())
+        return
 
-    for x, y in walls:
-        board[x][y] = 1
+    for i in range(start, len(empty)):
+        x, y = empty[i]
 
-    answer = max(answer, bfs(board))
+        if lab[x][y] == 0:
+            lab[x][y] = 1
+            dfs(i + 1, count + 1)
+            lab[x][y] = 0
 
+dfs(0, 0)
 print(answer)
