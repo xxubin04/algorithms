@@ -1,7 +1,5 @@
-input = open(0).readline
+a, b, c = int(input()), int(input()), int(input())
+nums = list(str(a*b*c))
 
-num = 1
-for _ in range(3):
-    num *= int(input())
-for a in range(10):
-    print(list(str(num)).count(str(a)))
+for i in range(10):
+    print(nums.count(str(i)))
