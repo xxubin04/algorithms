@@ -1,9 +1,10 @@
 def solution(citations):
-    answer = ""
     citations.sort(reverse=True)
-    for i in range(len(citations)):
-        if citations[i] >= i+1: 
-            answer = i + 1
+    h = 0
+    
+    for i, c in enumerate(citations, start=1):
+        if c >= i:
+            h = i 
         else:
             break
-    return answer if answer != "" else 0 
+    return h
