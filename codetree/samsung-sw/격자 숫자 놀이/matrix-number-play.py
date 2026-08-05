@@ -128,7 +128,6 @@ while True:
     else:
         for i in range(num_col):
             a = align_ascend(cal_freq_col(i))
-            padding()
             align_col(a, i)
             padding()
 
