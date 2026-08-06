@@ -3,7 +3,7 @@
 <br>
 
 |번호|기출|문제이름|날짜|링크|
-|--|--|--|--|--|
+|:--:|--|--|:--:|:--:|
 |1|2015-하반기-1번|바이러스 검사|26.04.05|[🔗](https://github.com/xxubin04/algorithms/blob/main/codetree/samsung-sw/%EB%B0%94%EC%9D%B4%EB%9F%AC%EC%8A%A4%20%EA%B2%80%EC%82%AC/virus-detector.py)|
 |2|2017-상반기-오전-2번|외주 수익 최대화하기|26.05.12|[🔗](https://github.com/xxubin04/algorithms/blob/main/codetree/samsung-sw/%EC%99%B8%EC%A3%BC%20%EC%88%98%EC%9D%B5%20%EC%B5%9C%EB%8C%80%ED%99%94%ED%95%98%EA%B8%B0/max-of-outsourcing-profit.py)|
 |3|2017-하반기-오전-1번|조삼모사|26.05.20|[🔗](https://github.com/xxubin04/algorithms/blob/main/codetree/samsung-sw/%EC%A1%B0%EC%82%BC%EB%AA%A8%EC%82%AC/three-at-dawn-and-four-at-dusk.py)|
