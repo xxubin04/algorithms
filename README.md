@@ -19,6 +19,9 @@
 |13|2019-상반기-오전-1번|시공의 돌풍|26.07.28|[🔗](https://github.com/xxubin04/algorithms/blob/main/codetree/samsung-sw/%EC%8B%9C%EA%B3%B5%EC%9D%98%20%EB%8F%8C%ED%92%8D/heros-of-storm.py)|
 |14|2019-상반기-오후-1번|격자 숫자 놀이|26.08.05|[🔗](https://github.com/xxubin04/algorithms/blob/main/codetree/samsung-sw/%EA%B2%A9%EC%9E%90%20%EC%88%AB%EC%9E%90%20%EB%86%80%EC%9D%B4/matrix-number-play.py)|
 |15|2019-상반기-오후-2번|바이러스 백신|26.08.06|[🔗](https://github.com/xxubin04/algorithms/blob/main/codetree/samsung-sw/%EB%B0%94%EC%9D%B4%EB%9F%AC%EC%8A%A4%20%EB%B0%B1%EC%8B%A0/vaccine-for-virus.py)|
+|16|2024-상반기-오전-1번|고대 문명 유적 탐사|26.08.12|[🔗](https://github.com/xxubin04/algorithms/blob/main/codetree/samsung-sw/%EA%B3%A0%EB%8C%80%20%EB%AC%B8%EB%AA%85%20%EC%9C%A0%EC%A0%81%20%ED%83%90%EC%82%AC/ancient-ruin-exploration.py)|
+|17|2026-상반기-오후-1번|아기 고래의 첫 항해|26.08.18|[🔗](https://github.com/xxubin04/algorithms/blob/main/codetree/samsung-sw/%EC%95%84%EA%B8%B0%20%EA%B3%A0%EB%9E%98%EC%9D%98%20%EC%B2%AB%20%ED%95%AD%ED%95%B4/baby-whale-first-voyage.py)|
+|18|2026-상반기-오전-2번|코디의 향수 공방|26.08.22|[🔗](https://github.com/xxubin04/algorithms/blob/main/codetree/samsung-sw/%EC%BD%94%EB%94%94%EC%9D%98%20%ED%96%A5%EC%88%98%20%EA%B3%B5%EB%B0%A9/perfume-workshop.py)|
 
 <br>
 <br>
