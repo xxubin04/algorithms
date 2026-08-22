@@ -102,14 +102,13 @@ for _ in range(k):
     # 선택된 회전을 실제 graph에 적용
     graph = max_temp_g
 
-    # 전체 누적이 아니라 "이번 턴" 점수
+    # 전체 누적이 아니라 이번 턴 점수
     turn_total = 0
 
     # 최초 획득할 유물
     current_nodes = max_nodes
 
     # ======== 연쇄 유물 획득 ========
-    # while True는 여기에 들어가야 함
     while current_nodes:
 
         turn_total += len(current_nodes)
