@@ -22,6 +22,7 @@
 |16|2024-상반기-오전-1번|고대 문명 유적 탐사|26.08.12|[🔗](https://github.com/xxubin04/algorithms/blob/main/codetree/samsung-sw/%EA%B3%A0%EB%8C%80%20%EB%AC%B8%EB%AA%85%20%EC%9C%A0%EC%A0%81%20%ED%83%90%EC%82%AC/ancient-ruin-exploration.py)|
 |17|2026-상반기-오후-1번|아기 고래의 첫 항해|26.08.18|[🔗](https://github.com/xxubin04/algorithms/blob/main/codetree/samsung-sw/%EC%95%84%EA%B8%B0%20%EA%B3%A0%EB%9E%98%EC%9D%98%20%EC%B2%AB%20%ED%95%AD%ED%95%B4/baby-whale-first-voyage.py)|
 |18|2026-상반기-오전-2번|코디의 향수 공방|26.08.22|[🔗](https://github.com/xxubin04/algorithms/blob/main/codetree/samsung-sw/%EC%BD%94%EB%94%94%EC%9D%98%20%ED%96%A5%EC%88%98%20%EA%B3%B5%EB%B0%A9/perfume-workshop.py)|
+|19|2026-상반기-오전-1번|아기 바다거북의 대모험: 해저 화산 지대|26.08.27|[🔗](https://github.com/xxubin04/algorithms/blob/main/codetree/samsung-sw/%EC%95%84%EA%B8%B0%20%EB%B0%94%EB%8B%A4%EA%B1%B0%EB%B6%81%EC%9D%98%20%EB%8C%80%EB%AA%A8%ED%97%98%3A%20%ED%95%B4%EC%A0%80%20%ED%99%94%EC%82%B0%20%EC%A7%80%EB%8C%80/a-little-sea-turtles-big-adventure.py)|
 
 <br>
 <br>
