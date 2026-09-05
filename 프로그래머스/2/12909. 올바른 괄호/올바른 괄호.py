@@ -1,19 +1,41 @@
 def solution(s):
     stk = []
-    
-    for p in s:
-        if not stk:  # 스택이 비어있다면
-            if p == ')':  # 추가하려는 괄호가 )이라면
-                return False
-            else:
+
+    for i in list(s):
+        if len(stk) == 0:
+            if i == '(':
                 stk.append('(')
-        elif stk[-1] == '(':  # 스택의 가장 최근 괄호가 (이라면
-            if p == ')':
+            else:
+                return False
+        elif stk[-1] == '(':
+            if i == ')':
                 stk.pop()
             else:
                 stk.append('(')
+        else:
+            return False
     
     if stk:
-        return False 
-        
+        return False
+    
     return True
+
+    
+#     stk = []
+    
+#     for p in s:
+#         if not stk:  # 스택이 비어있다면
+#             if p == ')':  # 추가하려는 괄호가 )이라면
+#                 return False
+#             else:
+#                 stk.append('(')
+#         elif stk[-1] == '(':  # 스택의 가장 최근 괄호가 (이라면
+#             if p == ')':
+#                 stk.pop()
+#             else:
+#                 stk.append('(')
+    
+#     if stk:
+#         return False 
+        
+#     return True
