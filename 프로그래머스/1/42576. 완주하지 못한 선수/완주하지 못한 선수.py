@@ -1,14 +1,10 @@
+from collections import Counter
+
 def solution(participant, completion):
-    success = {}
-    for p in participant:
-        if p in success:
-            success[p] += 1
-        else:
-            success[p] = 1
+    participant, completion = Counter(participant), Counter(completion)
     
-    for c in completion:
-        success[c] -= 1
+    for name in participant:
+        if participant[name] == completion[name]:
+            continue
         
-    for name, num in success.items():
-        if num != 0:
-            return name
+        return name
