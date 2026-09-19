@@ -6,18 +6,6 @@
 #         spicy += heappop(scoville) * 2
 #         heappush(scoville, spicy)
 #         answer += 1
-#     if heappop(scoville) < K: return -1
-#     return answer
-
-
-# from heapq import heappush, heappop, heapify
-# def solution(scoville, K):
-#     answer = 0
-#     heapify(scoville)
-#     while (spicy := heappop(scoville) < K and len(scoville) >= 2):
-#         spicy += heappop(scoville) * 2
-#         heappush(scoville, spicy)
-#         answer += 1
 #         if (a := heappop(scoville)) >= K:
 #             return answer
 #             break
@@ -26,19 +14,22 @@
 #     if heappop(scoville) < K: return -1
 #     return answer
 
+import heapq
 
-from heapq import heappush, heappop, heapify
 def solution(scoville, K):
+    heapq.heapify(scoville)
     answer = 0
-    heapify(scoville)
-    while True:
-        spicy = 0
-        if scoville[0] >= K:
-            return answer
-            break
-        elif scoville[0] < K and len(scoville) >= 2:
-            spicy += heappop(scoville) + heappop(scoville) * 2
-            heappush(scoville, spicy)
-            answer += 1
-        else:
+    
+    while scoville[0] < K:
+        if len(scoville) < 2:
             return -1
+
+        first = heapq.heappop(scoville)
+        second = heapq.heappop(scoville)
+
+        new_scoville = first + second * 2
+        heapq.heappush(scoville, new_scoville)
+
+        answer += 1
+
+    return answer
