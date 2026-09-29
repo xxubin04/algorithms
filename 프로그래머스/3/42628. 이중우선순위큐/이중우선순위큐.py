@@ -1,26 +1,48 @@
 import heapq
 
 def solution(operations):
-    heap = []
-    
-    for o in operations:
-        op, num = o.split()
+    min_heap = []
+    max_heap = []
+    valid = [False] * len(operations)
+
+    for i, operation in enumerate(operations):
+        op, num = operation.split()
         num = int(num)
-        
-        if op == 'I':  # 삽입하는 명령어라면
-            heapq.heappush(heap, num)
-        else:  # 삭제하는 명령어라면
-            if len(heap) == 0:  # 힙이 비어있다면 
-                continue
-            
-            if num == 1:  # 최댓값을 삭제한다면
-                heap.remove(max(heap))
-            else:  # 최솟값을 삭제한다면
-                heapq.heappop(heap)
-    
-    if not heap:  # 큐가 비어있다면
-        return([0, 0])
-    else:  # 큐가 안 비어있다면
-        return([int(max(heap)), int(heapq.heappop(heap))])
-                
-    
+
+        # 삽입
+        if op == 'I':
+            heapq.heappush(min_heap, (num, i))
+            heapq.heappush(max_heap, (-num, i))
+            valid[i] = True
+
+        # 삭제
+        else:
+            if num == 1:
+                # 이미 삭제된 값 제거
+                while max_heap and not valid[max_heap[0][1]]:
+                    heapq.heappop(max_heap)
+
+                if max_heap:
+                    _, idx = heapq.heappop(max_heap)
+                    valid[idx] = False
+
+            else:
+                # 이미 삭제된 값 제거
+                while min_heap and not valid[min_heap[0][1]]:
+                    heapq.heappop(min_heap)
+
+                if min_heap:
+                    _, idx = heapq.heappop(min_heap)
+                    valid[idx] = False
+
+    # 마지막으로 삭제된 값 정리
+    while min_heap and not valid[min_heap[0][1]]:
+        heapq.heappop(min_heap)
+
+    while max_heap and not valid[max_heap[0][1]]:
+        heapq.heappop(max_heap)
+
+    if not min_heap:
+        return [0, 0]
+
+    return [-max_heap[0][0], min_heap[0][0]]
