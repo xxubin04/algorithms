@@ -1,22 +1,35 @@
-from collections import Counter
+from collections import defaultdict
 
 def solution(want, number, discount):
-    ans = 0
-    target = dict(zip(want, number))
-    cnt = Counter(discount[:10])
+    possible = 0  # 가능한 날
+    want_dict = defaultdict(int)  # (사야하는 물건: 수량) 딕셔너리
+    discount_dict = defaultdict(int)  # n일동안 할인하는 물건 딕셔너리
     
-    for i in range(len(discount) - 9):
-        if all(cnt.get(w, 0) >= target[w] for w in want):
-            ans += 1
+    # 딕셔너리에 저장
+    for goods, count in zip(want, number):
+        want_dict[goods] = count
+    
+    # 할인 물건 딕셔너리 초기화
+    for i in range(sn := sum(number)):
+        discount_dict[discount[i]] += 1
+    
+    s, e = 0, sn-1  # 시작, 끝
+    
+    while e < len(discount)-1:
+        if want_dict == discount_dict:
+            possible += 1
+            
+        discount_dict[discount[s]] -= 1
         
-        if i + 10 < len(discount):
-            left = discount[i]
-            right = discount[i+10]
+        if discount_dict[discount[s]] == 0:
+            del discount_dict[discount[s]]
             
-            cnt[left] -= 1
-            if cnt[left] == 0:
-                del cnt[left]
-            
-            cnt[right] += 1
+        s += 1
+        e += 1
+        
+        discount_dict[discount[e]] += 1
     
-    return ans
+    if want_dict == discount_dict:
+        possible += 1
+    
+    return possible
