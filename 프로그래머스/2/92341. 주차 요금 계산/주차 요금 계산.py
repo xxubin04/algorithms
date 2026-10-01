@@ -70,13 +70,16 @@ def solution(fees, records):
         fee_time = parking_time - basic_time  # 기본 시간 제외하고 요금 내야하는 시간
         fee = basic_fee  # 기본 요금으로 초기화
         
-        if fee_time < 0:  # 기본 시간보다 적게 주차했다면 0으로 
-            fee_time = 0
+        # 기본 시간보다 적게 주차했다면 0으로 
+        fee_time = max(fee_time, 0)
         
-        if fee_time % unit_time == 0:  # 단위 시간으로 나누어 떨어지면
-            fee += (fee_time // unit_time) * unit_fee
-        else:  # 단위 시간으로 나누어 떨어지지 않으면
-            fee += (fee_time // unit_time + 1) * unit_fee
+        # if fee_time % unit_time == 0:  # 단위 시간으로 나누어 떨어지면
+        #     fee += (fee_time // unit_time) * unit_fee
+        # else:  # 단위 시간으로 나누어 떨어지지 않으면
+        #     fee += (fee_time // unit_time + 1) * unit_fee
+        
+        # 단위 시간으로 나눠떨어지지 않으면 올림
+        fee += math.ceil(fee_time / unit_time) * unit_fee
         
         result.append(fee)
     
