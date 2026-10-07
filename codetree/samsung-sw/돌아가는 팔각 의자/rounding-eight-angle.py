@@ -1,35 +1,41 @@
+import sys
 from collections import deque 
 
-chairs = []
-for _ in range(4):
-    chairs.append(deque(map(int, input().strip())))
+input = sys.stdin.readline
 
-for _ in range(int(input())):
-    num, dir = map(int, input().split())
-    n = num - 1
-    rotate_dir = [0] * 4
-    rotate_dir[n] = dir
+chairs = [deque(map(int, input().strip())) for _ in range(4)]
 
-    # 왼쪽 확인
+for _ in range(K := int(input())):
+    n, d = map(int, input().strip().split())
+    n -= 1   # 1-based
+
+    rotate = [0, 0, 0, 0]  # 각 의자가 회전하는 방향 
+    rotate[n] = d
+
+    # 왼쪽 방향으로 확인
     for i in range(n, 0, -1):
-        # 인접한 의자끼리 서로 다르다면
-        if chairs[i][6] == chairs[i-1][2]:
+        if chairs[i-1][2] != chairs[i][6]:
+            rotate[i-1] = -rotate[i]
+        else:
             break
-        
-        rotate_dir[i-1] = -rotate_dir[i]
     
-    # 오른쪽 확인
+    # 오른쪽 방향으로 확인
     for i in range(n, 3):
-        if chairs[i][2] == chairs[i+1][6]:
-            break 
-        
-        rotate_dir[i+1] = -rotate_dir[i]
-
-    for i in range(4):
-        if rotate_dir[i] == 1:
-            chairs[i].rotate(1)
-        elif rotate_dir[i] == -1:
-            chairs[i].rotate(-1)        
-
+        if chairs[i][2] != chairs[i+1][6]:
+            rotate[i+1] = -rotate[i]
+        else:
+            break
     
-print(chairs[0][0] + chairs[1][0] * 2 + chairs[2][0] * 4 + chairs[3][0] * 8)
+    for i in range(4):
+        if rotate[i] == 1:  # 시계 방향
+            chairs[i].rotate(1)
+        elif rotate[i] == -1:  # 반시계 방향
+            chairs[i].rotate(-1)
+    
+    answer = 0
+    
+    for i in range(4):
+        if chairs[i][0] == 1:  # 남쪽지방 사람이라면
+            answer += 2 ** i 
+    
+print(answer)
