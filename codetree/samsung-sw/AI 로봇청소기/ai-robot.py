@@ -1,188 +1,195 @@
+import sys 
 from collections import deque
 
-N, K, L = map(int, input().split())  # 격자의 크기 N, 청소기의 개수 K, 테스트 횟수 L
-grid = []  # 격자
-cleaner = []  # 청소기
-dirs1 = [(-1, 0), (0, -1), (0, 1), (1, 0)]
-dirs2 = [(0, -1), (-1, 0), (0, 1), (1, 0)]
+input = sys.stdin.readline
 
-# 격자 입력
-for _ in range(N):
-    grid.append(list(map(int, input().split())))
+N, K, L = map(int, input().rstrip().split())  # N: 격자의 크기 / K: 로봇 청소기의 개수 / L: 테스트 횟수
+dirs = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # 우선순위대로 나열 (동0 남1 서2 북3)
+dir_comb = [(3, 0, 1), (0, 1, 2), (1, 2, 3), (2, 3, 0)]
 
-# 청소기 초기 위치 입력
+# 격자판 정보 저장
+grid = [list(map(int, input().rstrip().split())) for _ in range(N)]
+cleaners = []  # 청소기의 위치 좌표 저장 
+
+# 청소기 위치
 for _ in range(K):
-    cx, cy = map(int, input().split())
-    cleaner.append((cx-1, cy-1))
+    cx, cy = map(int, input().rstrip().split())  # 청소기의 좌표 입력받음
+    cx -= 1
+    cy -= 1  # 0-based
+    cleaners.append((cx, cy))
 
 
 # 1. 청소기 이동
-def move_cleaner(x, y):
-    fx, fy = x, y  # 초기 좌표
-
-    # 현재 위치에 먼지가 있으면 이동하지 않음
-    if grid[x][y] > 0:
-        return (x, y)
-
-    q = deque([(x, y)])
-    visited = [[0] * N for _ in range(N)]
+def move_cleaner(idx, x, y):
+    start_x, start_y = x, y
+    q = deque([(x, y, 0)])
+    visited = [[0] * N for _ in range(N)]  # 방문 여부
     visited[x][y] = 1
 
+    min_dst = -1  # 먼지가 있는 최소 거리
+    next_x, next_y = N, N   # 이동할 x, y 좌표
+
     while q:
-        candidates = []  # 현재 거리에서 발견한 먼지 칸들
+        x, y, dst = q.popleft()
 
-        for _ in range(len(q)):
-            x, y = q.popleft()
+        # 이미 최소 거리를 찾았고, 그보다 먼 거리라면 탐색 종료
+        if min_dst != -1 and dst > min_dst:
+            break 
 
-            for dx, dy in dirs1:
-                nx, ny = x + dx, y + dy
+        # 오염 격자라면
+        if grid[x][y] > 0:
+            # 첫 오염 격자라면 최소 거리 설정
+            if min_dst == -1:
+                min_dst = dst 
+                next_x, next_y = x, y
+            
+            # 같은 최소거리라면 행, 열 작은대로 좌표 선택
+            elif dst == min_dst:
+                if (x, y) < (next_x, next_y):
+                    next_x, next_y = x, y 
 
-                # 범위 밖
-                if not (0 <= nx < N and 0 <= ny < N):
-                    continue
+        for dx, dy in [(-1, 0), (0, -1), (0, 1), (1, 0)]:
+            nx, ny = x + dx, y + dy 
 
-                # 이미 방문
-                if visited[nx][ny]:
-                    continue
-
-                # 물건이 있는 칸
-                if grid[nx][ny] == -1:
-                    continue
-
-                # 다른 청소기가 있는 칸
-                if occupied[nx][ny]:
-                    continue
-
-                visited[nx][ny] = 1
-
-                # 먼지가 있는 칸 발견
-                if grid[nx][ny] > 0:
-                    candidates.append((nx, ny))
-                else:
-                    # 깨끗한 칸이면 계속 이동 
-                    q.append((nx, ny))
-
-        # 같은 최단거리의 먼지를 모두 확인한 뒤
-        if candidates:
-            return min(candidates)
-                    
-    return (fx, fy)  # 이동할 수 없다면 제자리
-
-
-# 2. 청소
-def clean(x, y):
-    max_dust = 0  # 최대 먼지량
-    total = min(20, grid[x][y])  # 5개의 격자 합 
-    num_4 = []  # 4방향의 격자 값 저장 
-    mx, my = 0, 0  # 뺼 격자 저장
-
-    # 5개의 격자 합 구하기
-    for dx, dy in dirs2:
-        nx, ny = x + dx, y + dy
-        
-        # 범위 안인 경우
-        if 0 <= nx < N and 0 <= ny < N and grid[nx][ny] != -1:
-            num_4.append((nx, ny))
-            total += min(20, grid[nx][ny])
-        else:  # 범위 밖인 경우
-            num_4.append((-1, -1))
+            if not 0 <= nx < N:
+                continue 
+            
+            if not 0 <= ny < N:
+                continue 
+            
+            if not visited[nx][ny] == 0:
+                continue 
+            
+            if grid[nx][ny] == -1:
+                continue 
+            
+            if (nx, ny) in cleaners:
+                continue 
+            
+            visited[nx][ny] = 1
+            q.append((nx, ny, dst+1))
     
-    # 1개의 격자씩 값 뺴기
-    for i in range(4):
-        if num_4[i] == (-1, -1) and max_dust < total:  # 범위 밖인 격자를 빼야한다면, 최댓값 갱신만
-            max_dust = total
-            mx, my = -1, -1
-            continue
-        
-        n = num_4[i]
-        if (t := total - min(20, grid[n[0]][n[1]])) > max_dust:
-            max_dust = t  # 최댓값 갱신
-            mx, my = n  # 뺄 좌표 저장
+    # 이동 가능한 오염 격자가 없다면 현재 위치 유지
+    if min_dst == -1:
+        return (start_x, start_y)
     
-    # 격자마다 20씩 청소
-    if grid[x][y] - 20 <= 0:
-        grid[x][y] = 0
-    else:
+    return (next_x, next_y)
+
+
+# 2. 청소 
+# 우선순위: 동0 남1 서2 북3
+# [0] 북동남(3, 0, 1) / [1] 동남서(0, 1, 2) / [2] 남서북(1, 2, 3) / [3] 서북동(2, 3, 0) 
+def clean(i, x, y):
+    max_dust = -1  # 청소할 수 있는 먼지의 최대량
+    max_dir = 0  # 청소할 방향
+
+    # 현재 청소기의 위치의 먼지 제거
+    if (d := grid[x][y]) >= 20:
         grid[x][y] -= 20
+    else:
+        grid[x][y] = 0
+    
+    cleaners[idx] = (x, y)
 
-    for i in range(4):
-        nx, ny = num_4[i]
-        if (nx, ny) == (mx, my) or (nx, ny) == (-1, -1):  # 빼는 격자거나 범위 밖이라면
+    for dir_idx, comb in enumerate(dir_comb):
+        dust_by_dir = 0  # 방향당 먼지 청소량
+    
+        for j in comb:
+            nx, ny = x + dirs[j][0], y + dirs[j][1]
+
+            if not 0 <= nx < N:
+                continue 
+            
+            if not 0 <= ny < N:
+                continue 
+            
+            if grid[nx][ny] == -1:
+                continue 
+            
+            if (d := grid[nx][ny]) >= 20:
+                dust_by_dir += 20
+            else:
+                dust_by_dir += d
+        
+        if dust_by_dir > max_dust:
+            max_dust = dust_by_dir
+            max_dir = dir_idx  # 먼지량이 가장 최대일 때의 방향 저장
+    
+    # 선택한 방향으로 청소
+    for j in dir_comb[max_dir]:
+        nx, ny = x + dirs[j][0], y + dirs[j][1]
+
+        if not 0 <= nx < N:
             continue 
         
-        if grid[nx][ny] - 20 <= 0:
-            grid[nx][ny] = 0
-        else:
-            grid[nx][ny] -= 20
+        if not 0 <= ny < N:
+            continue 
+        
+        if grid[nx][ny] == -1:
+            continue 
 
+        if (d := grid[nx][ny]) >= 20:
+            grid[nx][ny] -= 20
+        else:
+            grid[nx][ny] = 0
+    
+    return 
+            
 
 # 3. 먼지 축적
 def accumulate_dust():
     for i in range(N):
         for j in range(N):
-            if grid[i][j] not in [0, -1]:
-                grid[i][j] += 5   # 먼지가 있는 모든 격좌에 5씩 추가 
+            if grid[i][j] > 0:
+                grid[i][j] += 5
+    return 
 
 
 # 4. 먼지 확산
 def spread_dust():
-    grid_dup = [row[:] for row in grid]  # 격자 얕은 복사 
+    grid_dup = [row[:] for row in grid]
 
-    for i in range(N):
-        for j in range(N):
-            if grid[i][j] == 0:  # 깨끗한 격자라면
-                total = 0  # 주변 4방향의 먼지 합 
-                
-                for dx, dy in dirs2:
-                    nx, ny = i + dx, j + dy
+    for x in range(N):
+        for y in range(N):
+            
+            # 깨끗한 격자에만 먼지가 확산됨
+            if grid[x][y] != 0:
+                continue 
 
-                    if 0 <= nx < N and 0 <= ny < N and not grid[nx][ny] == -1:
-                        total += grid[nx][ny]
+            surround_sum = 0   # 주변의 먼지량 합
+
+            for dx, dy in dirs:
+                nx, ny = x + dx, y + dy
+
+                if not 0 <= nx < N:
+                    continue 
                 
-                grid_dup[i][j] = total // 10
+                if not 0 <= ny < N:
+                    continue 
+                
+                if grid[nx][ny] > 0:
+                    surround_sum += grid[nx][ny]
+            
+            grid_dup[x][y] = surround_sum // 10 
     
     return grid_dup
 
 
-# 5. 출력
-def print_dust():
-    total = 0
+# 메인
+for _ in range(L):
+    # 1. 청소기 이동
+    for idx in range(K):
+        x, y = cleaners[idx]
 
-    for i in range(N):
-        for j in range(N):
-            if grid[i][j] == -1:
-                continue 
-            
-            total += grid[i][j]
-    
-    print(total)
+        next_x, next_y = move_cleaner(idx, x, y)
 
+        cleaners[idx] = (next_x, next_y)
 
-while L:  # 테스트 L번 반복
-    L -= 1
+    # 2. 청소
+    for idx in range(K):
+        x, y = cleaners[idx]
 
-    # 청소기 위치 별도 저장 (2차원 배열로)
-    occupied = [[False] * N for _ in range(N)]
-
-    for x, y in cleaner:
-        occupied[x][y] = True 
-    
-    for i in range(K):
-        x, y = cleaner[i]
-
-        # 기존 위치에서 청소기 제거
-        occupied[x][y] = False
-
-        nx, ny = move_cleaner(x, y)
-
-        cleaner[i] = (nx, ny)
-        
-        # 새로운 위치에 청소기 배치
-        occupied[nx][ny] = True
-        
-    for clx, cly in cleaner:
-        # 2. 청소 
-        clean(clx, cly)
+        clean(idx, x, y)
 
     # 3. 먼지 축적
     accumulate_dust()
@@ -191,4 +198,15 @@ while L:  # 테스트 L번 반복
     grid = spread_dust()
 
     # 5. 출력
-    print_dust()
+    total = 0
+
+    for x in range(N):
+        for y in range(N):
+            if grid[x][y] > 0:
+                total += grid[x][y]
+    
+    if total == 0:
+        print(0)
+        break
+
+    print(total)
