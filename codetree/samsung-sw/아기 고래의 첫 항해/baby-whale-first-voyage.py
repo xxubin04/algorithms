@@ -1,199 +1,220 @@
-from collections import deque
+from collections import deque 
 
-N, cr, cc, cd = map(int, input().split())  # 격자의 칸 수, 현재 행, 현재 열, 현재 방향
-remain_sea = 0  # 방문하지 않은 바다 수
-sea_loc = []  # 바다의 좌표
-dirs = [(0, 0), (-1, 0), (1, 0), (0, -1), (0, 1)]  # 1: 상, 2: 하, 3: 좌, 4: 우
-# [직진, 좌회전, 우회전, 180도]
-rotate_dir = [[], [1, 3, 4, 2], [2, 4, 3, 1], [3, 2, 1, 4], [4, 1, 2, 3]]  # 1: 상, 2: 하, 3: 좌, 4: 우
-graph = [[2] * (N+1)]  # 격자 (바다: 0, 암호: 1, 방문한 바다: 2)
-visit_route = []  # 방문 순서 저장
+N, r, c, d = map(int, input().split())  # N: 격자판 길이 / r: 고래 초기 행 / c: 고래 초기 열 / d = 방향 
 
-for i in range(1, N + 1):
-    row = list(map(int, input().split()))
-    graph.append([2] + row)
+grid = [list(map(int, input().split())) for _ in range(N)]  # 격자판 (바다0 암초1)
+dirs = [(-1, 0), (0, 1), (1, 0), (0, -1)]  # 북0 동1 남2 서3
 
-    for j in range(1, N + 1):
-        if row[j - 1] == 0:
-            sea_loc.append((i, j))
-            remain_sea += 1
+r -= 1  # 0-based
+c -= 1
+
+visit_seq = [(r + 1, c + 1)]  # 방문 순서
+grid[r][c] = -1  # 초기 위치 방문 처리
 
 
-# 1. 방문하지 않은 인접 바다가 존재하는지 확인
-# 발견하면 바로 반환 (우선순위에 따라서 확인하므로)
-def check_to_visit(r, c):
-    global cd
+# [1. 인접 탐험]
+def near_exploration(x, y, d):
+    # 1. 현재 방향으로 직진
+    nx, ny, nd = straight_current(x, y, d)
 
-    for nd in rotate_dir[cd]:
-        dr, dc = dirs[nd]
-        nr, nc = r + dr, c + dc
+    if nx != None:  # 갈 곳이 있다면 
+        visit_seq.append((nx+1, ny+1))
+        return (nx, ny, nd)
+    
+    # 2. 좌회전 + 직진
+    nx, ny, nd = straight_current(x, y, turn_left(d))
 
-        # 격자 안에 위치하면서, 인접 칸이 방문하지 않은 바다라면
-        if 1 <= nr <= N and 1 <= nc <= N and graph[nr][nc] == 0:
-            cd = nd  # 이동 방향 갱신
-            return nr, nc  # 인접 칸의 행, 열
+    if nx != None:  # 갈 곳이 있다면 
+        visit_seq.append((nx+1, ny+1))
+        return (nx, ny, nd)
+    
+    # 3. 우회전 + 직진
+    nx, ny, nd = straight_current(x, y, turn_right(d))
 
-    return None  # 방문할 인접한 바다가 없다면 None 반환
+    if nx != None:  # 갈 곳이 있다면 
+        visit_seq.append((nx+1, ny+1))
+        return (nx, ny, nd)
 
+    # 4. 180도 회전 + 직진
+    nx, ny, nd = straight_current(x, y, rotate_180(d))
 
-# 2. 방문하지 않은 인접 바다로 1칸 이동
-def move_near_sea(r, c):
-    global cr, cc, remain_sea
-    cr, cc = r, c  # 현재 위치 갱신
-
-    graph[cr][cc] = 2
-    remain_sea -= 1
-
-    visit_route.append((cr, cc))
-
-
-# 3. 거리 계산해서 가장 가까운 거리인 칸의 좌표 반환
-def cal_dist():
-    bfs_near()
+    if nx != None:  # 갈 곳이 있다면 
+        visit_seq.append((nx+1, ny+1))
+        return (nx, ny, nd)
+    
+    return (None, None, None)  # 인접 탐험 불가 
 
 
-# 3-1. 현재 위치에서 바다까지의 최소 거리 찾기
-def bfs_near():
-    global dist_to_sea
+# 1. 현재 방향으로 직진
+def straight_current(x, y, d):
+    nx, ny = x + dirs[d][0], y + dirs[d][1]
 
-    q = deque([(cr, cc, 0)])
+    if not 0 <= nx < N:
+        return (None, None, None)
+    
+    if not 0 <= ny < N:
+        return (None, None, None)
+    
+    if grid[nx][ny] in (1, -1):  # 암초거나 이미 방문했다면 
+        return (None, None, None)
 
-    visited = [[False] * (N + 1) for _ in range(N + 1)]
-    visited[cr][cc] = True
+    return (nx, ny, d)    
 
-    min_dist = -1 # 현재 위치로부터의 최소 거리
+
+# 2. 좌회전 = 90도 회전 3번
+def turn_left(cd):
+    return (cd + 3) % 4
+
+
+# 3. 우회전 = 90도 회전 1번
+def turn_right(cd):
+    return (cd + 1) % 4
+
+
+# 4. 180도 회전 = 90도 회전 2번
+def rotate_180(cd):
+    return (cd + 2) % 4 
+
+
+# [2. 가장 가까운 바다로 이동]
+def move_nearest_sea(x, y, d):
+
+    # 1) 현재 위치에서 가장 가까운 미방문 바다 찾기
+    q = deque([(x, y, 0)])
+    visited = [[0] * N for _ in range(N)]
+    visited[x][y] = 1
+
+    min_dst = -1
+    candidates = []
 
     while q:
-        r, c, dist = q.popleft()
+        cx, cy, dst = q.popleft()
 
-        # 이미 최소 거리보다 멀어졌다면 종료
-        if min_dist != -1 and dist > min_dist:
+        # 이미 최소거리를 찾았고 그보다 멀어졌다면 종료
+        if min_dst != -1 and dst > min_dst:
             break
 
         # 아직 방문하지 않은 바다 발견
-        if graph[r][c] == 0:
-            if min_dist == -1:
-                min_dist = dist
+        if grid[cx][cy] == 0:
+            if min_dst == -1:
+                min_dst = dst
 
-            dist_to_sea.append((r, c))
+            if dst == min_dst:
+                candidates.append((cx, cy))
+
+        # 이미 최소거리 후보를 찾았다면 더 탐색할 필요 없음
+        if min_dst != -1:
             continue
 
-        # 상하좌우 BFS
-        for nd in range(1, 5):
-            dr, dc = dirs[nd]
+        for dx, dy in dirs:
+            nx, ny = cx + dx, cy + dy
 
-            nr, nc = r + dr, c + dc
-
-            if not (1 <= nr <= N and 1 <= nc <= N):
+            if not (0 <= nx < N and 0 <= ny < N):
                 continue
 
-            # 암초는 지나갈 수 없음
-            if graph[nr][nc] == 1:
+            if visited[nx][ny]:
                 continue
 
-            if visited[nr][nc]:
+            # 암초는 통과 불가능
+            if grid[nx][ny] == 1:
                 continue
 
-            visited[nr][nc] = True
-            q.append((nr, nc, dist + 1))
+            visited[nx][ny] = 1
+            q.append((nx, ny, dst + 1))
+
+    # 더 이상 방문할 바다가 없다면
+    if not candidates:
+        return (None, None, None)
+
+    # 같은 최단거리라면 행 - 열 작은 순
+    candidates.sort(key=lambda x: (x[0], x[1]))
+    target_x, target_y = candidates[0]
 
 
-# 4. 거리가 같은 칸이 여러개면, 행-열 작은 것 반환
-def choose_block():
-    global dist_to_sea
-    # dist_to_sea = sorted(dist_to_sea, key=lambda x: (x[0], x[1]))
-    dist_to_sea.sort(key=lambda x: (x[0], x[1]))
-    return dist_to_sea[0]
+    # 2) target에서 역방향 BFS (각 칸에서 target까지의 거리 계산)
+    dist = [[-1] * N for _ in range(N)]
 
-
-# 5. 거리가 1 줄어드는 칸으로 이동 (우선순위에 맞게)
-def bfs_far():
-    global cr, cc, cd
-
-    # 목적지까지의 거리 계산
-    dist = [[-1] * (N + 1) for _ in range(N + 1)]
-
-    q = deque([(dest_r, dest_c)])
-    dist[dest_r][dest_c] = 0
+    q = deque([(target_x, target_y)])
+    dist[target_x][target_y] = 0
 
     while q:
-        r, c = q.popleft()
+        cx, cy = q.popleft()
 
-        for nd in range(1, 5):
-            dr, dc = dirs[nd]
+        for dx, dy in dirs:
+            nx, ny = cx + dx, cy + dy
 
-            nr = r + dr
-            nc = c + dc
-
-            if not (1 <= nr <= N and 1 <= nc <= N):
+            if not (0 <= nx < N and 0 <= ny < N):
                 continue
 
-            # 암초는 이동 불가능
-            if graph[nr][nc] == 1:
+            if dist[nx][ny] != -1:  # 이미 방문한 곳이라면
                 continue
 
-            if dist[nr][nc] != -1:
+            # 암초는 이동 불가
+            if grid[nx][ny] == 1:
                 continue
 
-            dist[nr][nc] = dist[r][c] + 1
-            q.append((nr, nc))
+            dist[nx][ny] = dist[cx][cy] + 1
+            q.append((nx, ny))
 
-    # 실제 이동 (좌, 하, 우, 상)
-    move_priority = [3, 2, 4, 1]
-    
-    while cr != dest_r or cc != dest_c:
+
+    # 3) target으로 실제 이동 (0 북 / 1 동 / 2 남 / 3 서)
+    move_order = [3, 2, 1, 0]
+
+    while dist[x][y] > 0:
+
+        for nd in move_order:
+            dx, dy = dirs[nd]
+            nx, ny = x + dx, y + dy
+
+            if not (0 <= nx < N and 0 <= ny < N):
+                continue
+
+            # target까지의 거리가 1 감소해야 함
+            if dist[nx][ny] != dist[x][y] - 1:
+                continue
+
+            # 아직 방문하지 않은 바다라면 방문 순서 기록
+            if grid[nx][ny] == 0:
+                visit_seq.append((nx + 1, ny + 1))
+                grid[nx][ny] = -1
+
+            # 실제 위치와 방향 갱신
+            x, y = nx, ny
+            d = nd
+            break
+
+    return (x, y, d)
+
+
+# [메인]
+# 방향 초기화
+if d == 1:
+    d = 0
+elif d == 2:
+    d = 2
+elif d == 3:
+    d = 3
+elif d == 4:
+    d = 1
+
+while True:
+
+    if not any(0 in row for row in grid):  # 다 방문했다면 
+        break
+
+    # 1. 인접 탐험 
+    nx, ny, nd = near_exploration(r, c, d)
+
+    if nx is not None:  # 인접 탐험 가능하면
+        grid[nx][ny] = -1  # 방문 처리
+        r, c, d = nx, ny, nd
+
+    # 2. 가장 가까운 바다로 이동
+    else:  # 인접 탐험 불가능하면 
+        r, c, d = move_nearest_sea(r, c, d)
+
+        if r is None:
+            break
         
-        for nd in move_priority:
-            dr, dc = dirs[nd]
-            
-            nr, nc = cr + dr, cc + dc
-            
-            if not (1 <= nr <= N and 1 <= nc <= N):
-                continue
-            
-            if graph[nr][nc] == 1:
-                continue 
-            
-            # 목적지까지 거리가 1 감소했다면 이동
-            if dist[nr][nc] == dist[cr][cc] - 1:
-                cr, cc = nr, nc
-                cd = nd
-                break
-    
-    # 목적지에 도착했으므로 새로운 바다 방문 처리 
-    move_near_sea(cr, cc)
-
-graph[cr][cc] = 2
-remain_sea -= 1
-
-visit_route.append((cr, cc))
-
-## 시뮬레이션
-# 방문할 바다가 남은 동안
-while remain_sea:
-    ## 1단계: 인접 탐험
-    nt = check_to_visit(cr, cc) 
-    
-    if nt is not None:
-        nr, nc = nt
-        move_near_sea(nr, nc) 
-        continue
-        
-    ## 2단계: 가장 가까운 바다로 이동
-    dist_to_sea = []  # 현재 위치에서 바다로의 거리가 최소인 좌표들
-    cal_dist()
-    
-    # 더 이상 갈 수 있는 바다가 없다면
-    if not dist_to_sea:
-        break 
-    
-    if len(dist_to_sea) == 1:
-        dest_r, dest_c = dist_to_sea[0]
-    else:
-        dest_r, dest_c = choose_block()
-    
-    # 선택한 바다까지 이동
-    bfs_far()
-
-for i, j in visit_route:
-    print(i, j)
+for rc in visit_seq:
+    print(*rc)
