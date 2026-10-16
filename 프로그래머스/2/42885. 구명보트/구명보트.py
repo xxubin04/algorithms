@@ -38,9 +38,8 @@ def solution(people, limit):
         
         if total <= limit:  # 2명의 합이 제한을 넘지 않는다면
             s += 1
-            e -= 1
-        else:  # 2명의 합이 제한을 넘으면, 큰 쪽만 구명보트 태워 보냄 
-            e -= 1
+        
+        e -= 1
             
         answer += 1
     
@@ -48,8 +47,4 @@ def solution(people, limit):
         answer += 1
             
     return answer
-    
-    
-    
-    
     
