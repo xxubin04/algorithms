@@ -46,31 +46,70 @@
 
 
 
-from collections import deque
+# from collections import deque
+
+# def solution(maps):
+    
+#     dirs = [(0, 1), (1, 0), (-1, 0), (0, -1)]
+#     n, m = len(maps), len(maps[0])
+    
+#     def bfs():
+#         q = deque([(0, 0, -1)])
+#         maps[0][0] = 0
+        
+#         while q:
+#             x, y, cnt = q.popleft()
+            
+#             if x == n-1 and y == m-1:
+#                 return -cnt
+            
+#             for dx, dy in dirs:
+#                 nx, ny = x+dx, y+dy
+                
+#                 if 0 <= nx < n and 0 <= ny < m and maps[nx][ny] == 1:
+#                     q.append((nx, ny, cnt-1))
+#                     maps[nx][ny] = 0
+        
+#         return -1
+    
+#     return bfs()
+    
+    
+    
+    
+    
+from collections import deque 
 
 def solution(maps):
+    n = len(maps) - 1
+    m = len(maps[0]) - 1
     
     dirs = [(0, 1), (1, 0), (-1, 0), (0, -1)]
-    n, m = len(maps), len(maps[0])
     
-    def bfs():
-        q = deque([(0, 0, -1)])
-        maps[0][0] = 0
-        
-        while q:
-            x, y, cnt = q.popleft()
-            
-            if x == n-1 and y == m-1:
-                return -cnt
-            
-            for dx, dy in dirs:
-                nx, ny = x+dx, y+dy
-                
-                if 0 <= nx < n and 0 <= ny < m and maps[nx][ny] == 1:
-                    q.append((nx, ny, cnt-1))
-                    maps[nx][ny] = 0
-        
-        return -1
+    q = deque([(0, 0)])
+    maps[0][0] = -1
     
-    return bfs()
+    while q:
+        x, y = q.popleft()
+        
+        if x == n and y == m:
+            return -maps[n][m]
+        
+        for dx, dy in dirs:
+            nx, ny = x+dx, y+dy
+            
+            if not 0 <= nx <= n:
+                continue 
+            
+            if not 0 <= ny <= m:
+                continue
+            
+            if maps[nx][ny] <= 0:
+                continue
+            
+            maps[nx][ny] = maps[x][y] - 1
+            q.append((nx, ny))
+        
+            
+    return -1
     
