@@ -32,57 +32,116 @@
 
 #     return answer
 
+
+
+# from collections import defaultdict
+# import math
+
+# def solution(fees, records):
+#     # 기본 시간, 기본 요금, 단위 시간, 단위 요금
+#     basic_time, basic_fee, unit_time, unit_fee = fees
+#     cars = {}  # 차마다 정보 저장
+#     result = []  # 요금 리스트
+#     last_time = 23 * 60 + 59  # 23:59
+    
+#     # 차 번호마다의 기록 저장
+#     for r in records:
+#         time, car_num, enter_type = r.split()  # 시각, 차 번호, 출입 종류
+#         minute = 0  # 시각을 분으로 변경
+#         minute += (int(time[:2]) * 60 + int(time[3:]))
+        
+#         # cars에 없는 차라면 추가
+#         if car_num not in cars:
+#             cars[car_num] = []
+            
+#         cars[car_num].append((minute, enter_type))
+        
+#     cars = sorted(cars.items())  # 키 오름차순으로 정렬
+    
+#     for car_num, history in cars:
+#         parking_time = 0  # 주차되어 있던 시각
+        
+#         # 들어간 시각 기준
+#         for idx in range(0, len(history), 2):
+#             # 만약 마지막 출차가 없다면 -> 23:59로 처리
+#             if idx == len(history) - 1 and len(history) % 2 != 0:
+#                 parking_time += (last_time - history[idx][0])
+#             else:
+#                 parking_time += (history[idx+1][0] - history[idx][0])
+                
+#         fee_time = parking_time - basic_time  # 기본 시간 제외하고 요금 내야하는 시간
+#         fee = basic_fee  # 기본 요금으로 초기화
+        
+#         # 기본 시간보다 적게 주차했다면 0으로 
+#         fee_time = max(fee_time, 0)
+        
+#         # if fee_time % unit_time == 0:  # 단위 시간으로 나누어 떨어지면
+#         #     fee += (fee_time // unit_time) * unit_fee
+#         # else:  # 단위 시간으로 나누어 떨어지지 않으면
+#         #     fee += (fee_time // unit_time + 1) * unit_fee
+        
+#         # 단위 시간으로 나눠떨어지지 않으면 올림
+#         fee += math.ceil(fee_time / unit_time) * unit_fee
+        
+#         result.append(fee)
+    
+#     return result
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 from collections import defaultdict
 import math
 
 def solution(fees, records):
-    # 기본 시간, 기본 요금, 단위 시간, 단위 요금
-    basic_time, basic_fee, unit_time, unit_fee = fees
-    cars = {}  # 차마다 정보 저장
-    result = []  # 요금 리스트
-    last_time = 23 * 60 + 59  # 23:59
+    answer = []
+    car_dict = defaultdict(list)  # 입출차 시각
+    last_minute = 23 * 60 + 59  # 마지막 출차 시각
     
-    # 차 번호마다의 기록 저장
+    # 차 번호대로 시각을 분으로 저장
     for r in records:
-        time, car_num, enter_type = r.split()  # 시각, 차 번호, 출입 종류
-        minute = 0  # 시각을 분으로 변경
-        minute += (int(time[:2]) * 60 + int(time[3:]))
-        
-        # cars에 없는 차라면 추가
-        if car_num not in cars:
-            cars[car_num] = []
-            
-        cars[car_num].append((minute, enter_type))
-        
-    cars = sorted(cars.items())  # 키 오름차순으로 정렬
+        time, car_num, inout = r.split()  # 시각, 차 번호, 입출차 여부
+        minute = int(time[0:2]) * 60 + int(time[3:5])  # 시각을 분으로 변경
+        car_dict[car_num].append(minute)
+        # -print(f"{car_num}, {car_dict[car_num]}")
     
-    for car_num, history in cars:
-        parking_time = 0  # 주차되어 있던 시각
-        
-        # 들어간 시각 기준
-        for idx in range(0, len(history), 2):
-            # 만약 마지막 출차가 없다면 -> 23:59로 처리
-            if idx == len(history) - 1 and len(history) % 2 != 0:
-                parking_time += (last_time - history[idx][0])
-            else:
-                parking_time += (history[idx+1][0] - history[idx][0])
-                
-        fee_time = parking_time - basic_time  # 기본 시간 제외하고 요금 내야하는 시간
-        fee = basic_fee  # 기본 요금으로 초기화
-        
-        # 기본 시간보다 적게 주차했다면 0으로 
-        fee_time = max(fee_time, 0)
-        
-        # if fee_time % unit_time == 0:  # 단위 시간으로 나누어 떨어지면
-        #     fee += (fee_time // unit_time) * unit_fee
-        # else:  # 단위 시간으로 나누어 떨어지지 않으면
-        #     fee += (fee_time // unit_time + 1) * unit_fee
-        
-        # 단위 시간으로 나눠떨어지지 않으면 올림
-        fee += math.ceil(fee_time / unit_time) * unit_fee
-        
-        result.append(fee)
+    for car_num, minute_list in car_dict.items():
+        if len(minute_list) % 2 != 0:  # 만약 출차시각이 없다면 23:59 추가
+            car_dict[car_num].append(last_minute)
     
-    return result
+    for car_num, minute_list in car_dict.items():
+        total_minute = 0  # 각 차마다의 주차시각
+        for idx in range(0, len(minute_list), 2):
+            total_minute += (minute_list[idx+1] - minute_list[idx])
+        car_dict[car_num] = total_minute  # 딕셔너리의 value를 주차시각(분)으로 변경
         
+    # print(car_dict)
+        
+    # 기본 시간, 기본 요금, 단위 시간, 단위 요금 
+    basic_time, basic_fee, unit_time, unit_fee = fees
     
+    for car_num, total_minute in car_dict.items():
+        if (t := total_minute - basic_time) < 0:
+            fee = basic_fee
+        else:
+            fee = basic_fee + unit_fee * math.ceil(t / unit_time)
+        
+        car_dict[car_num] = fee
+    
+    car_list = sorted(car_dict.items(), key=lambda x: (x[0]))
+    
+    for car_num, fee in car_list:
+        answer.append(fee)
+
+    return answer
