@@ -1,35 +1,64 @@
+# from collections import Counter
+
+# def solution(want, number, discount):
+#     want_counter = Counter(dict(zip(want, number)))
+#     window_size = sum(number)
+
+#     discount_counter = Counter(discount[:window_size])
+
+#     answer = 0
+
+#     if want_counter == discount_counter:
+#         answer += 1
+
+#     for i in range(window_size, len(discount)):
+#         # 윈도우에서 빠지는 상품
+#         discount_counter[discount[i - window_size]] -= 1
+
+#         # 개수가 0이 되면 삭제
+#         if discount_counter[discount[i - window_size]] == 0:
+#             del discount_counter[discount[i - window_size]]
+
+#         # 새로 들어오는 상품
+#         discount_counter[discount[i]] += 1
+
+#         if want_counter == discount_counter:
+#             answer += 1
+
+#     return answer
+
+
+
 from collections import defaultdict
 
 def solution(want, number, discount):
-    possible = 0  # 가능한 날
-    want_dict = defaultdict(int)  # (사야하는 물건: 수량) 딕셔너리
-    discount_dict = defaultdict(int)  # n일동안 할인하는 물건 딕셔너리
+    answer = 0
+    food_dict = defaultdict(int)
+    want_dict = defaultdict(int)
     
-    # 딕셔너리에 저장
-    for goods, count in zip(want, number):
-        want_dict[goods] = count
+    for w, n in zip(want, number):
+        want_dict[w] = n
     
-    # 할인 물건 딕셔너리 초기화
-    for i in range(sn := sum(number)):
-        discount_dict[discount[i]] += 1
+    # 처음 9개
+    for f in discount[:10]:
+        food_dict[f] += 1
     
-    s, e = 0, sn-1  # 시작, 끝
+    if want_dict == food_dict:
+        answer += 1
+
+    s, e = 0, 10
     
-    while e < len(discount)-1:
-        if want_dict == discount_dict:
-            possible += 1
-            
-        discount_dict[discount[s]] -= 1
+    while e < len(discount):
+        food_dict[discount[s]] -= 1
+        food_dict[discount[e]] += 1
         
-        if discount_dict[discount[s]] == 0:
-            del discount_dict[discount[s]]
-            
+        if food_dict[discount[s]] == 0:
+            del food_dict[discount[s]]
+        
         s += 1
         e += 1
         
-        discount_dict[discount[e]] += 1
+        if want_dict == food_dict:
+            answer += 1
     
-    if want_dict == discount_dict:
-        possible += 1
-    
-    return possible
+    return answer
